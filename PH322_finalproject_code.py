@@ -66,6 +66,8 @@ Ag=[]
 At=[]
 Ax=[]
 
+delta_v=0
+
 #-------------------------------functions------------------------------#
 
 def unit_vector(v):
@@ -78,7 +80,7 @@ def v_mag(v):
     return vmag
 
 def update_a():
-    global a, dt, r, v, t_flight
+    global a, dt, r, v, t_flight, delta_v
     rh=unit_vector(r)
     ag=[-mu/((v_mag(r))**2)*rh[0], -mu/((v_mag(r))**2)*rh[1]]
     Ag.append(v_mag(ag))
@@ -92,6 +94,7 @@ def update_a():
     at=[T/m*vh[0],T/m*vh[1]]
     At.append(v_mag(at))
     a=[ag[0]+at[0],ag[1]+at[1]]
+    delta_v+=v_mag(at)*dt
     
 def update_m():
     global m, mdot, dt, Mx, My
@@ -165,6 +168,7 @@ print("Final position:", r, "m")
 print("Initial velocity:",v0, "m/s")
 print("Final velocity: ",v, "m/s")
 print("Time taken to reach Saturn orbit from Earth orbit: ", t_flight/60/60/24/365, "years")
+print("Delta-v:", delta_v/1000, "km/s")
 printbreak()
 
 plot_trajectory()
