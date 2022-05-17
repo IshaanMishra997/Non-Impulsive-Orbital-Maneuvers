@@ -16,11 +16,12 @@ mu=1.327e20#for Solar orbit (m^3/s^2)
 rp=149.6e9#m
 ra=1432e9#m
 
-#Using data from NASA NEXT-C Ion thruster
-T=2*235e-3#N
+
+#T=2*235e-3#N <<Using data from NASA NEXT-C Ion thruster
+T=77.7e-3#<<maximum thrust for TRANSFER ORBIT
 Isp=4220#s
 
-m0=1425.6 # kg <tweak to match impulsive
+m0=1425.6 # k
 g0=9.81#m/s^2
 
 a=(mu/ra)**(1/2)-(mu/rp)**(1/2)
@@ -39,8 +40,7 @@ printbreak()
 
 #--------------------------function_variables--------------------------#
 
-dt=int(t/100000)#s
-
+dt= 100#s
 #Assuming Earth orbit is circular, initial conditions 
 a0=[mu/rp**2,0]
 r0=[rp,0]
@@ -67,6 +67,8 @@ At=[]
 Ax=[]
 
 delta_v=0
+at=0
+ag=0
 
 #-------------------------------functions------------------------------#
 
@@ -80,7 +82,7 @@ def v_mag(v):
     return vmag
 
 def update_a():
-    global a, dt, r, v, t_flight, delta_v
+    global a, dt, r, v, t_flight, delta_v, at, ag
     rh=unit_vector(r)
     ag=[-mu/((v_mag(r))**2)*rh[0], -mu/((v_mag(r))**2)*rh[1]]
     Ag.append(v_mag(ag))
@@ -152,7 +154,7 @@ def plot_acc():
     pl.show()
 #-------------------------------main_loop------------------------------#
 
-print("NUMERICAL SIMULATION (FLYBY)")
+print("NUMERICAL SIMULATION ")
 print("Time step:", dt, "s")
 print("Initial mass:",m, "kg")
 t_flight=0
@@ -169,8 +171,13 @@ print("Initial velocity:",v0, "m/s")
 print("Final velocity: ",v, "m/s")
 print("Time taken to reach Saturn orbit from Earth orbit: ", t_flight/60/60/24/365, "years")
 print("Delta-v:", delta_v/1000, "km/s")
+if v_mag(at)>v_mag(ag): 
+    print("NOT A TRANSFER ORBIT")
+else: 
+    print("TRANSFER ORBIT")
 printbreak()
-
+#print(math.sqrt(mu/r), v_mag(v))
+#print(math.sqrt(mu/ra)/1000, v_mag(v)/1000)
 plot_trajectory()
 plot_speed()
 plot_mass()
